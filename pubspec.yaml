@@ -43,6 +43,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   analyzer: ^5.2.0
   google_fonts: ^3.0.1
+  select_form_field: ^2.2.0
+  quickalert: ^1.0.0
 
 dev_dependencies:
   flutter_test:

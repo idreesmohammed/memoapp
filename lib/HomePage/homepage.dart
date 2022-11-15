@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:quickalert/quickalert.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:memo/Box.dart';
 import 'package:memo/Constants/constants.dart';
 import 'package:memo/model.dart';
 import 'package:provider/provider.dart';
+import 'package:select_form_field/select_form_field.dart';
 
 import '../providerclass.dart';
 
@@ -22,11 +24,21 @@ class _HomePageState extends State<HomePage> {
   String dropdownValue = 'Qty';
   var productController = TextEditingController();
   var quantityController = TextEditingController();
+  var editedProductController = TextEditingController();
+  var editedQtyController = TextEditingController();
+  var selectedController = TextEditingController();
   bool darkMode = false;
+  bool isChecked = false;
+  String selectedField = "";
   @override
   void dispose() {
     Hive.box('products').close();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
@@ -121,7 +133,7 @@ class _HomePageState extends State<HomePage> {
                             width: width * 0.03,
                           ),
                           SizedBox(
-                            width: width * 0.4,
+                            width: width * 0.35,
                             child: RichText(
                               overflow: TextOverflow.ellipsis,
                               strutStyle: StrutStyle(fontSize: 12.0),
@@ -144,7 +156,7 @@ class _HomePageState extends State<HomePage> {
                             width: width * 0.02,
                           ),
                           SizedBox(
-                            width: width * 0.05,
+                            width: width * 0.1,
                             child: Text(
                               productModels[index].quantity.toString(),
                               style: GoogleFonts.poppins(
@@ -160,16 +172,21 @@ class _HomePageState extends State<HomePage> {
                           ),
                           SizedBox(
                             width: width * 0.13,
-                            child: Text(
-                              Constants.quantity,
-                              style: GoogleFonts.poppins(
-                                fontSize: 23,
-                                color: Provider.of<ProviderFunction>(context,
-                                                listen: true)
-                                            .darkMode ==
-                                        false
-                                    ? Colors.black
-                                    : Colors.white,
+                            child: RichText(
+                              overflow: TextOverflow.ellipsis,
+                              strutStyle: StrutStyle(fontSize: 12.0),
+                              text: TextSpan(
+                                style: (GoogleFonts.poppins(
+                                  fontSize: 23,
+                                  fontWeight: FontWeight.w400,
+                                  color: Provider.of<ProviderFunction>(context,
+                                                  listen: true)
+                                              .darkMode ==
+                                          false
+                                      ? Colors.black
+                                      : Colors.white,
+                                )),
+                                text: productModels[index].productType,
                               ),
                             ),
                           ),
@@ -187,8 +204,205 @@ class _HomePageState extends State<HomePage> {
                                           false
                                       ? Colors.black
                                       : Colors.white)),
+                          //editIconButton
                           IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      actions: [
+                                        SizedBox(
+                                          height: height * 0.05,
+                                        ),
+                                        Container(
+                                          color: Colors.white,
+                                          height: height * 0.4,
+                                          child: Column(
+                                            children: [
+                                              SizedBox(
+                                                height: height * 0.06,
+                                                width: width,
+                                                child: Card(
+                                                  elevation: 10,
+                                                  child: Padding(
+                                                    padding: EdgeInsets.only(
+                                                        left: 10.0),
+                                                    child: TextFormField(
+                                                      controller: editedProductController =
+                                                          TextEditingController.fromValue(
+                                                              TextEditingValue(
+                                                                  text: productModels[
+                                                                          index]
+                                                                      .productName)),
+                                                      decoration: InputDecoration(
+                                                          border:
+                                                              InputBorder.none,
+                                                          hintText: (Constants
+                                                              .hintTextProduct)),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: height * 0.03,
+                                              ),
+                                              SizedBox(
+                                                height: height * 0.06,
+                                                width: width * 0.5,
+                                                child: Center(
+                                                  child: Card(
+                                                    elevation: 10,
+                                                    child: TextFormField(
+                                                      controller: editedQtyController =
+                                                          TextEditingController.fromValue(
+                                                              TextEditingValue(
+                                                                  text: productModels[
+                                                                          index]
+                                                                      .quantity
+                                                                      .toString())),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      keyboardType:
+                                                          TextInputType.number,
+                                                      decoration: InputDecoration(
+                                                          border:
+                                                              InputBorder.none,
+                                                          hintText: (Constants
+                                                              .hintQuantity)),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: height * 0.05,
+                                              ),
+                                              Card(
+                                                  elevation: 10,
+                                                  child: Padding(
+                                                    padding: EdgeInsets.only(
+                                                        left: 5.0, top: 5.0),
+                                                    child: SelectFormField(
+                                                      type: SelectFormFieldType
+                                                          .dropdown, // or can be dialog
+                                                      initialValue:
+                                                          productModels[index]
+                                                              .productType,
+                                                      decoration: InputDecoration(
+                                                          border:
+                                                              InputBorder.none,
+                                                          suffixIcon: Icon(Icons
+                                                              .arrow_drop_down)),
+
+                                                      items: _items,
+
+                                                      onChanged: (val) {
+                                                        print(selectedField +
+                                                            "hi");
+                                                        setState(() {
+                                                          selectedField = val;
+                                                        });
+                                                      },
+                                                    ),
+                                                  )),
+                                              SizedBox(
+                                                height: height * 0.05,
+                                              ),
+                                              SizedBox(
+                                                height: height * 0.05,
+                                                width: width,
+                                                child: Row(
+                                                  children: [
+                                                    SizedBox(
+                                                      width: width * 0.36,
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: SizedBox(
+                                                        child: Text(
+                                                          Constants.cancel,
+                                                          style: const TextStyle(
+                                                              fontSize: 20,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: width * 0.06,
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        if (editedProductController
+                                                                .text
+                                                                .toString()
+                                                                .isEmpty ||
+                                                            editedQtyController
+                                                                .text
+                                                                .toString()
+                                                                .isEmpty) {
+                                                          QuickAlert.show(
+                                                              context: context,
+                                                              type:
+                                                                  QuickAlertType
+                                                                      .warning);
+                                                        }
+                                                        editProducts(
+                                                            productModels[
+                                                                index],
+                                                            editedProductController
+                                                                .text,
+                                                            int.parse(
+                                                                editedQtyController
+                                                                    .text
+                                                                    .toString()),
+                                                            selectedField);
+                                                        setState(() {
+                                                          productController
+                                                              .text.isEmpty;
+                                                          quantityController
+                                                              .text.isEmpty;
+                                                        });
+                                                        Navigator
+                                                            .pushReplacement(
+                                                          context,
+                                                          MaterialPageRoute<
+                                                              void>(
+                                                            builder: (BuildContext
+                                                                    context) =>
+                                                                const HomePage(),
+                                                          ),
+                                                        );
+                                                      },
+                                                      child: SizedBox(
+                                                        child: Text(
+                                                          Constants.apply,
+                                                          style: const TextStyle(
+                                                              fontSize: 20,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+
+                                              // TextFormField(
+                                              //   controller: productController,
+                                              // ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
                               icon: Icon(Icons.edit,
                                   color: Provider.of<ProviderFunction>(context,
                                                   listen: true)
@@ -210,15 +424,17 @@ class _HomePageState extends State<HomePage> {
                 ? Colors.white
                 : Colors.black,
         onPressed: () {
-          showAnimatedDialog(
+          showDialog(
             context: context,
-            barrierDismissible: true,
             builder: (BuildContext context) {
-              return ClassicGeneralDialogWidget(
+              return AlertDialog(
                 actions: [
+                  SizedBox(
+                    height: height * 0.05,
+                  ),
                   Container(
                     color: Colors.white,
-                    height: height * 0.3,
+                    height: height * 0.4,
                     child: Column(
                       children: [
                         SizedBox(
@@ -249,6 +465,7 @@ class _HomePageState extends State<HomePage> {
                               child: TextFormField(
                                 controller: quantityController,
                                 textAlign: TextAlign.center,
+                                keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
                                     hintText: (Constants.hintQuantity)),
@@ -256,6 +473,31 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         ),
+                        SizedBox(
+                          height: height * 0.05,
+                        ),
+                        Card(
+                            elevation: 10,
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 5.0, top: 5.0),
+                              child: SelectFormField(
+                                type: SelectFormFieldType
+                                    .dropdown, // or can be dialog
+                                initialValue: 'Kgs',
+                                decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    suffixIcon: Icon(Icons.arrow_drop_down)),
+
+                                items: _items,
+
+                                onChanged: (val) {
+                                  print(selectedField + "hi");
+                                  setState(() {
+                                    selectedField = val;
+                                  });
+                                },
+                              ),
+                            )),
                         SizedBox(
                           height: height * 0.05,
                         ),
@@ -269,6 +511,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               InkWell(
                                 onTap: () {
+                                  print(selectedField);
                                   Navigator.pop(context);
                                 },
                                 child: SizedBox(
@@ -293,28 +536,22 @@ class _HomePageState extends State<HomePage> {
                                       quantityController.text
                                           .toString()
                                           .isEmpty) {
-                                    const snackBar = SnackBar(
-                                      content:
-                                          Text('Please enter the valid Input'),
-                                    );
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(snackBar);
+                                    QuickAlert.show(
+                                        text: "Please check the Input Fields!",
+                                        context: context,
+                                        type: QuickAlertType.warning);
                                   }
                                   addProducts(
                                       productController.text,
                                       int.parse(
-                                          quantityController.text.toString()));
-                                  setState(() {
-                                    productController.text.isEmpty;
-                                    quantityController.text.isEmpty;
-                                  });
+                                          quantityController.text.toString()),
+                                      selectedField);
+
                                   Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute<void>(
-                                      builder: (BuildContext context) =>
-                                          const HomePage(),
-                                    ),
-                                  );
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const HomePage()));
                                 },
                                 child: SizedBox(
                                   child: Text(
@@ -327,7 +564,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ],
                           ),
-                        )
+                        ),
 
                         // TextFormField(
                         //   controller: productController,
@@ -338,9 +575,6 @@ class _HomePageState extends State<HomePage> {
                 ],
               );
             },
-            animationType: DialogTransitionType.fadeScale,
-            curve: Curves.easeOutSine,
-            duration: const Duration(seconds: 1),
           );
         },
         child: Icon(
@@ -356,10 +590,18 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  addProducts(String productName, int productQuantity) {
+  addProducts(String productName, int productQuantity, String type) {
+    print(type + "578");
+    if (type.isEmpty || type == "" || type == null) {
+      setState(() {
+        type = "Kgs";
+      });
+      print(type + "584");
+    }
     final productModel = ProductModel()
       ..productName = productName
-      ..quantity = productQuantity;
+      ..quantity = productQuantity
+      ..productType = type;
     final box = Boxes.getProducts();
     box.add(productModel);
   }
@@ -372,4 +614,48 @@ class _HomePageState extends State<HomePage> {
 
     //setState(() => transactions.remove(transaction));
   }
+
+  void editProducts(
+      ProductModel productModel, String product, int qty, String type) {
+    print(type + "596");
+    if (type.isEmpty || type == "" || type == null) {
+      setState(() {
+        type = "Kgs";
+      });
+      print(type + "584");
+    }
+    print(product + qty.toString());
+    productModel.productName = product;
+    productModel.quantity = qty;
+    productModel.productType = type;
+
+    // final productModel = ProductModel();
+    // if (productModel.isInBox == true) {
+    //   print("its here");
+    // } else {
+    //   print("not here");
+    // }
+    // productModel.productName = product;
+    // productModel.quantity = qty;
+    productModel.save();
+  }
+
+  final List<Map<String, dynamic>> _items = [
+    {
+      'value': 'Kgs',
+      'label': 'Kgs',
+    },
+    {
+      'value': 'Litre',
+      'label': 'Litre',
+    },
+    {
+      'value': 'Grams',
+      'label': 'Grams',
+    },
+    {
+      'value': 'Packets',
+      'label': 'Packets',
+    },
+  ];
 }

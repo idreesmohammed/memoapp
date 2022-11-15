@@ -7,4 +7,6 @@ class ProductModel extends HiveObject {
   late String productName;
   @HiveField(1)
   late int quantity;
+  @HiveField(2)
+  late String productType;
 }
