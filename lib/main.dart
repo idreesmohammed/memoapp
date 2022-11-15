@@ -4,7 +4,6 @@ import 'package:memo/providerclass.dart';
 import 'HomePage/homepage.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:hive/hive.dart';
 
 Future main() async {
   await Hive.initFlutter();

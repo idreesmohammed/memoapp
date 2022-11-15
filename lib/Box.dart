@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-
 import 'model.dart';
 
 class Boxes {
