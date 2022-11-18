@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:memo/Box.dart';
 import 'model.dart';
@@ -7,26 +6,19 @@ class StateManage extends GetxController {
   Rx darkMode = false.obs;
   Rx requiredField = "".obs;
 
-  @override
-  void onInit() {
-    // TODO: implement onInit
-    super.onInit();
-  }
-
   nighModeFunction() {
     darkMode.value = !darkMode.value;
+
     update();
   }
 
   dropDownChange(value) {
-    print(value + "dsfd");
     requiredField.value = value;
     update();
   }
 
   void deleteProduct(ProductModel productModels) {
     productModels.delete();
-    print("inside");
   }
 
   editProducts(
@@ -41,9 +33,6 @@ class StateManage extends GetxController {
   }
 
   addProducts(String productName, int productQuantity, String type, data) {
-    print(productQuantity);
-    print(data);
-    print(productName + type);
     if (type.isEmpty || type == "") {
       type = "Kg";
     }

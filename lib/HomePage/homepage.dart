@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:memo/HomePage/floatingactionbutton.dart';
 import 'package:memo/getxcontroller.dart';
@@ -10,7 +11,7 @@ import 'package:memo/Constants/constants.dart';
 import 'package:memo/model.dart';
 import 'package:provider/provider.dart';
 import 'package:select_form_field/select_form_field.dart';
-
+import 'package:memo/list_of_items.dart';
 import '../providerclass.dart';
 
 class HomePage extends StatefulWidget {
@@ -48,7 +49,7 @@ class _HomePageState extends State<HomePage> {
           appBar: AppBar(
             leading: IconButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  SystemNavigator.pop();
                 },
                 icon: Icon(
                   Icons.arrow_back_ios,
@@ -125,7 +126,7 @@ class _HomePageState extends State<HomePage> {
                                     SizedBox(
                                       width: width * 0.1,
                                     ),
-                                    Container(
+                                    SizedBox(
                                       //color: Colors.red,
                                       width: width * 0.55,
                                       child: RichText(
@@ -153,7 +154,7 @@ class _HomePageState extends State<HomePage> {
                                     SizedBox(
                                       width: width * 0.01,
                                     ),
-                                    Container(
+                                    SizedBox(
                                       //color: Colors.red,
                                       width: width * 0.1,
                                       child: Text(
@@ -168,7 +169,7 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                       ),
                                     ),
-                                    Container(
+                                    SizedBox(
                                       //color: Colors.red,
                                       width: width * 0.18,
                                       child: RichText(
@@ -304,7 +305,8 @@ class _HomePageState extends State<HomePage> {
                                                                   suffixIcon:
                                                                       Icon(Icons
                                                                           .arrow_drop_down)),
-                                                              items: _items,
+                                                              items: ItemList
+                                                                  .items,
                                                               onChanged: (val) {
                                                                 stateManage
                                                                     .dropDownChange(
@@ -513,34 +515,7 @@ class _HomePageState extends State<HomePage> {
                     );
             },
           ),
-          floatingActionButton: const FloatingButton(),
+          floatingActionButton: FloatingButton(stateManage.darkMode),
         ));
   }
-
-  final List<Map<String, dynamic>> _items = [
-    {
-      'value': 'Kg',
-      'label': 'Kg',
-    },
-    {
-      'value': 'Litre',
-      'label': 'Litre',
-    },
-    {
-      'value': 'Grams',
-      'label': 'Grams',
-    },
-    {
-      'value': 'Packets',
-      'label': 'Packets',
-    },
-    {
-      'value': 'ml',
-      'label': 'ml',
-    },
-    {
-      'value': 'Qty',
-      'label': 'Qty',
-    },
-  ];
 }
